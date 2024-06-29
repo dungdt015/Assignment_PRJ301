@@ -31,7 +31,7 @@
                 <c:forEach items="${requestScope.exams}" var="e">
                     <input type="checkbox" name="eid" value="${e.id}"/> ${e.assessment.name} - ${e.assessment.subject.name} - ${e.date} - ${e.duration} minutes <br/>
                 </c:forEach>
-                    <input type="submit" value="take"/>
+                    <input type="submit" value="Take"/>
             </form>
         </c:if>
     </body>
