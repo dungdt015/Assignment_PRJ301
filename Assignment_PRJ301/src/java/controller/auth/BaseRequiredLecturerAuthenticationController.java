@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Lecturer;
+
 import model.User;
 
 /**
@@ -19,9 +20,10 @@ import model.User;
  * @author admin
  */
 public class BaseRequiredLecturerAuthenticationController extends HttpServlet {
-   
+    
    private boolean isAuthenticated(HttpServletRequest request) {
        User user = (User)request.getSession().getAttribute("user");
+       
        if(user == null) {
            return false;
            
@@ -44,11 +46,13 @@ public class BaseRequiredLecturerAuthenticationController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
        User user =(User) request.getSession().getAttribute("user");
+       
        if(isAuthenticated(request)) {
            doGet(request, response, user, user.getLecturer());
        }else{
            response.getWriter().println("access denied");
        }
+      
     } 
 
     /** 
