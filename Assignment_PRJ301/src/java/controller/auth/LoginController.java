@@ -4,6 +4,7 @@
  */
 
 package controller.auth;
+import dal.RoleStudentDBContext;
 import dal.UserDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Role;
 import model.User;
 
 /**
@@ -59,7 +61,15 @@ public class LoginController extends HttpServlet {
         {
             response.getWriter().println("login failed!");
         }
-        
+        RoleStudentDBContext dBContext = new RoleStudentDBContext();
+        Role role = new Role();
+        if(role != null) {
+            request.getSession().setAttribute("role", role);
+            response.getWriter().println("login successful" + role.getDisplayname());
+        }
+        else{
+            response.getWriter().println("login failed!");
+        }
     }
 
     /** 

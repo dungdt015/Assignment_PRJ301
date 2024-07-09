@@ -47,11 +47,11 @@ public class AssessmentDBContext extends DBContext<Assessment>{
                 Subject sub= new Subject();
                 sub.setId(rs.getInt("subid"));
                 sub.setName(rs.getString("subname"));
-                a.setSubject(sub);
+                
                 
                 Exam exam = new Exam();
                 exam.setId(rs.getInt("eid"));
-                exam.setDate(rs.getTimestamp("from"));
+                exam.setFrom(rs.getTimestamp("from"));
                 exam.setDuration(rs.getInt("duration"));
                 exam.setAssessment(a);
                 

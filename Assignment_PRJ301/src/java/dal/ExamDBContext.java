@@ -45,7 +45,7 @@ public class ExamDBContext extends DBContext<Exam> {
 
                 Exam exam = new Exam();
                 exam.setId(rs.getInt("eid"));
-                exam.setDate(rs.getTimestamp("from"));
+                exam.setFrom(rs.getTimestamp("from"));
                 exam.setDuration(rs.getInt("duration"));
                 exam.setAssessment(a);
 

@@ -16,35 +16,35 @@
         <form action="take" method="POST">
             <table border="1px">
                 <tr>
-                    <td></td>
+                    <th></th>
+                    <c:forEach items="${requestScope.exams}" var="e">
+                        <th>
+                            ${e.assessment.name}
+                            ${e.from} - ${e.assessment.weight}
+                        </th>
+                    </c:forEach>
+                </tr>
+                <c:forEach items="${requestScope.students}" var="s">
+                 <tr>
+                    <td>${s.name}</td>
                     <c:forEach items="${requestScope.exams}" var="e">
                         <td>
-                            ${e.assessment.name}(${e.assessment.weight}) <br/>
-                            ${e.from}
+                            <input type="hidden" name="gradeid" value="${s.id}_${e.id}" />
+                            <input type="text" name="grade${s.id}_${e.id}" 
+                                   
+                                   <c:forEach items="${requestScope.grades}" var="g">
+                                       <c:if test="${g.exam.id eq e.id and g.student.id eq s.id}">
+                                       value="${g.score}"
+                                       </c:if>
+                                   </c:forEach>
+                                   />
                         </td>
                     </c:forEach>
-                <tr>
-                    <c:forEach items="${requestScope.students}" var="s">
-                    <tr>
-                        <td>${s.name}</td>
-                        <c:forEach items="${requestScope.exams}" var="e">
-                            <td>
-                                <input type="text" name="score${s.id}_${e.id}"
-                                       <c:forEach items="${requestScope.grades}" var="g">
-                                           <c:if test="${e.id eq g.exam.id and s.id eq g.student.id}">
-                                               value="${g.score}"
-                                           </c:if>
-                                       </c:forEach>
-                                       />
-                                <input type="hidden" name="gradeid" value="${s.id}_${e.id}"/>
-                            </td>
-                        </c:forEach>
-                    <tr>
-
-                    </c:forEach>    
+                </tr>   
+                </c:forEach>
             </table>
-            <input type="hidden" name="cid" value="${param.cid}" />
-            <input type="submit" value="save"/>
+            <input type="hidden" name="cid" value="${param.cid}"/>
+            <input type="submit" value="save" />
         </form>
     </body>
 </html>

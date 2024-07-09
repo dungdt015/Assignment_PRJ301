@@ -12,23 +12,19 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
     </head>
-    <body>
+     <body>
         <c:if test="${requestScope.exams eq null}">
-            <c:if test="${requestScope.courses.size() > 0}">
-            <form action="lecturer" method="POST">
-                <input type="hidden" name="lid" value="${param.lid}"/>
-                course: <select name="cid">
-                    <c:forEach items="${requestScope.courses}" var="c">
-                        <option value="${c.id}">
-                            ${c.name}
-                        </option>
-                    </c:forEach>
-                </select>
-                <input type="submit" value="view"/>
-            </form>
-                </c:if>
+        <form action="lecturer" method="POST"> 
+            <input type="hidden" name="lid" value="${param.lid}"/>
+            Course <select name="cid">
+                <c:forEach items="${requestScope.courses}" var="c">
+                    <option value="${c.id}">${c.name}</option>
+                </c:forEach>
+            </select>
+            <input type="submit" value="View"/>
+        </form>
         </c:if>
-        <c:if test="${requestScope.exams ne null}">
+       <c:if test="${requestScope.exams ne null}">
             <form action="take" method="GET">
                 <input type="hidden" name="cid" value="${param.cid}"/>
                 <c:forEach items="${requestScope.exams}" var="e">

@@ -1,19 +1,21 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
  * @author admin
  */
 public class Assessment {
-      private int id;
-        private String name;
-        private float weight;
-        private Subject subject;
-
+     private int id;
+    private String name;
+    private float weight;
+    private Subject subject;
         public int getId() {
             return id;
         }
@@ -38,12 +40,5 @@ public class Assessment {
             this.weight = weight;
         }
 
-        public Subject getSubject() {
-            return subject;
-        }
-
-        public void setSubject(Subject subject) {
-            this.subject = subject;
-        }
-
+       
 }

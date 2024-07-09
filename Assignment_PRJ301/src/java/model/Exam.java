@@ -12,8 +12,9 @@ import java.util.Date;
  * @author admin
  */
 public class Exam {
+
     private int id;
-    private Date date;
+    private Date from;
     private int duration;
     private Assessment assessment;
     private ArrayList<Grade> grades = new ArrayList<>();
@@ -26,12 +27,12 @@ public class Exam {
         this.id = id;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getFrom() {
+        return from;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setFrom(Date from) {
+        this.from = from;
     }
 
     public int getDuration() {
@@ -57,5 +58,5 @@ public class Exam {
     public void setGrades(ArrayList<Grade> grades) {
         this.grades = grades;
     }
-    
+
 }
