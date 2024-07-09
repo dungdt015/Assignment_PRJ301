@@ -20,22 +20,19 @@ import model.Subject;
  * @author admin
  */
 public class ExamDBContext extends DBContext<Exam> {
-
-    public ArrayList<Exam> getExamsByEids(int[] eids) {
-        ArrayList<Exam> exams = new ArrayList<>();
-        String sql = """
-                     SELECT e.eid,e.[from],e.duration,a.aid,a.aname,a.weight FROM exams e INNER JOIN assesments a ON a.aid = e.aid
-                     WHERE (1 > 2) """;
-        for (int eid : eids) {
-            sql += " OR eid = ? ";
-        }
+     ArrayList<Exam> exams = new ArrayList<>();
         PreparedStatement stm = null;
-        try {
-            stm = connection.prepareStatement(sql);
-            for (int i = 0; i < eids.length; i++) {
-                stm.setInt((i + 1), eids[i]);
-            }
+    
+    public ArrayList<Exam> getExamsByCourse(int cid) {
+        ArrayList<Exam> exams = new ArrayList<>();
+       try {
+            String sql = "SELECT e.eid,e.duration,e.[from],a.aid,a.aname,a.weight,sub.subid,sub.subname FROM exams e INNER JOIN assesments a ON a.aid = e.aid\n"
+                    + "			INNER JOIN subjects sub ON sub.subid = a.subid\n"
+                    + "			INNER JOIN courses c ON c.subid = sub.subid\n"
+                    + "			WHERE c.cid = ?";
 
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, cid);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 Assessment a = new Assessment();
@@ -90,5 +87,7 @@ public class ExamDBContext extends DBContext<Exam> {
     public void delete(Exam model) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+   
 
 }

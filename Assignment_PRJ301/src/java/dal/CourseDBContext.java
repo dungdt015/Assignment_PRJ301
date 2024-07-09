@@ -14,6 +14,7 @@ import model.Subject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Connection;
+import model.Student;
 
 /**
  *
@@ -41,6 +42,57 @@ public class CourseDBContext extends DBContext<Course>{
                 l.setId(rs.getInt("lid"));
                 c.setLecturer(l);
 
+                Subject sub = new Subject();
+                sub.setId(rs.getInt("subid"));
+                sub.setName(rs.getString("subname"));
+                c.setSubject(sub);
+                
+                Semester sem = new Semester();
+                sem.setId(rs.getInt("semid"));
+                c.setSemester(sem);
+
+                courses.add(c);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+            connection.close();
+            stm.close();    
+            } catch (SQLException ex) {
+                Logger.getLogger(CourseDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           
+        }
+
+        return courses;
+    }
+    public ArrayList<Course> filterByStudentID(int sid) {
+        ArrayList<Course> courses = new ArrayList<>();
+        PreparedStatement stm = null;
+        try {
+            String sql = "SELECT c.cid,c.cname,c.subid,sub.subname,c.lid,s.semid,s.season,s.active,s.year FROM \n"
+                    + "courses c INNER JOIN semester s ON s.semid = c.semid\n"
+                    + "INNER JOIN subjects sub ON sub.subid = c.subid\n"
+                    + "WHERE s.active = 1 AND c.lid = ?";
+
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, sid);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Course c = new Course();
+                c.setId(rs.getInt("cid"));
+                c.setName(rs.getString("cname"));
+
+//                Lecturer l = new Lecturer();
+//                l.setId(rs.getInt("id"));
+//                c.setLecturer(l);
+                
+                Student s = new Student();
+                s.setId(rs.getInt("sid"));
+                c.setStudent(s);
+                        
                 Subject sub = new Subject();
                 sub.setId(rs.getInt("subid"));
                 sub.setName(rs.getString("subname"));

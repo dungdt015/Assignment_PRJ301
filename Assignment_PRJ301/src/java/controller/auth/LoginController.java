@@ -4,7 +4,6 @@
  */
 
 package controller.auth;
-import dal.RoleStudentDBContext;
 import dal.UserDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,7 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Role;
 import model.User;
 
 /**
@@ -20,57 +18,93 @@ import model.User;
  * @author admin
  */
 public class LoginController extends HttpServlet {
-   
-    
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
-     * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+   protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         request.getRequestDispatcher("view/auth/login.jsp").forward(request, response);
-    } 
+    }
 
-    /** 
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        
+        String role = request.getParameter("role");
+
         UserDBContext db = new UserDBContext();
-        User user = db.getUserByUsernamePassword(username, password);
-        if(user !=null)
-        {
-            request.getSession().setAttribute("user", user);
-            response.getWriter().println("login successful: "+ user.getDisplayname());
-        }
-        else
-        {
-            response.getWriter().println("login failed!");
-        }
-        RoleStudentDBContext dBContext = new RoleStudentDBContext();
-        Role role = new Role();
-        if(role != null) {
-            request.getSession().setAttribute("role", role);
-            response.getWriter().println("login successful" + role.getDisplayname());
-        }
-        else{
-            response.getWriter().println("login failed!");
+        User user = null;
+
+        if ("student".equalsIgnoreCase(role)) {
+            user = db.getUserStudentByUsernamePassword(username, password);
+            if (user != null) {
+                request.getSession().setAttribute("user", user);
+                request.getSession().setAttribute("role", "student");
+                response.sendRedirect("../exam/student");
+            } else {
+                response.getWriter().println("Login failed: invalid username or password for student!");
+            }
+        } else if ("lecturer".equalsIgnoreCase(role)) {
+            user = db.getUserLecturerByUsernamePassword(username, password);
+            if (user != null) {
+                request.getSession().setAttribute("user", user);
+                request.getSession().setAttribute("role", "lecturer");
+                response.sendRedirect("exam/lecturer?lid=1");
+            } else {
+                response.getWriter().println("Login failed: invalid username or password for lecturer!");
+            }
+        } else {
+            response.getWriter().println("Login failed: unknown role!");
         }
     }
+    
+
+//    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+//    /** 
+//     * Handles the HTTP <code>GET</code> method.
+//     * @param request servlet request
+//     * @param response servlet response
+//     * @throws ServletException if a servlet-specific error occurs
+//     * @throws IOException if an I/O error occurs
+//     */
+//    @Override
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//    throws ServletException, IOException {
+//        request.getRequestDispatcher("view/auth/login.jsp").forward(request, response);
+//    } 
+//
+//    /** 
+//     * Handles the HTTP <code>POST</code> method.
+//     * @param request servlet request
+//     * @param response servlet response
+//     * @throws ServletException if a servlet-specific error occurs
+//     * @throws IOException if an I/O error occurs
+//     */
+//    @Override
+//    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+//    throws ServletException, IOException {
+//        String username = request.getParameter("username");
+//        String password = request.getParameter("password");
+//        
+//        UserDBContext db = new UserDBContext();
+//        User user = db.getUserByUsernamePassword(username, password);
+//        if(user !=null)
+//        {
+//            request.getSession().setAttribute("user", user);
+//            response.getWriter().println("login successful: "+ user.getDisplayname());
+//        }
+//        else
+//        {
+//            response.getWriter().println("login failed!");
+//        }
+//        RoleStudentDBContext dBContext = new RoleStudentDBContext();
+//        Role role = new Role();
+//        if(role != null) {
+//            request.getSession().setAttribute("role", role);
+//            response.getWriter().println("login successful" + role.getDisplayname());
+//        }
+//        else{
+//            response.getWriter().println("login failed!");
+//        }
+//    }
 
     /** 
      * Returns a short description of the servlet.

@@ -13,6 +13,15 @@ import java.util.ArrayList;
 public class Course {
       private int id;
     private Lecturer lecturer;
+    private Student student;
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
     private String name;
     private Semester semester;
     private Subject subject;

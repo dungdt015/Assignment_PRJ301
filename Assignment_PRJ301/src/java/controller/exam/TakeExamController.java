@@ -51,7 +51,7 @@ public class TakeExamController extends HttpServlet {
             for (int i = 0; i < raw_eids.length; i++) {
                 eids[i] = Integer.parseInt(raw_eids[i]);
             }
-            ArrayList<Exam> exams = examDB.getExamsByEids(eids);
+            ArrayList<Exam> exams = examDB.getExamsByCourse(cid);
             ArrayList<Grade> grades = gradeDB.getGradesByEids(eids);
 
             request.setAttribute("students", students);
