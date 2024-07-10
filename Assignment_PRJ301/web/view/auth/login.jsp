@@ -49,13 +49,7 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
                 </div>
-                <div class="form-group">
-                    <label for="role">Login as</label>
-                    <select class="form-control" id="role" name="role" required>
-                        <option value="student">Student</option>
-                        <option value="lecturer">Lecturer</option>
-                    </select>
-                </div>
+               
 
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
             </form>

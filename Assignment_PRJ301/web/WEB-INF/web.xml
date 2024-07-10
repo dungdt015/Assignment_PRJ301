@@ -24,6 +24,10 @@
         <servlet-name>BaseRequiredStudentAuthenticationController</servlet-name>
         <servlet-class>cotroller.auth.student.BaseRequiredStudentAuthenticationController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TakeExamStudentController</servlet-name>
+        <servlet-class>cotroller.auth.student.TakeExamStudentController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LecturerViewExamController</servlet-name>
         <url-pattern>/exam/lecturer</url-pattern>
@@ -47,5 +51,9 @@
     <servlet-mapping>
         <servlet-name>BaseRequiredStudentAuthenticationController</servlet-name>
         <url-pattern>/BaseRequiredStudentAuthenticationController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TakeExamStudentController</servlet-name>
+        <url-pattern>/exam/student/take</url-pattern>
     </servlet-mapping>
 </web-app>

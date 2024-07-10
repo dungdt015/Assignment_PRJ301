@@ -17,95 +17,154 @@ import model.Student;
  */
 public class UserDBContext extends DBContext<User>{
     public User getUserByUsernamePassword(String username, String password) {
-        PreparedStatement stm = null;
         User user = null;
         try {
-            String sql = "SELECT u.username, u.displayname, "
-                       + "l.lid, l.lname, "
-                       + "s.sid, s.sname "
-                       + "FROM users u "
-                       + "LEFT JOIN users_lecturers ul ON ul.username = u.username AND ul.active = 1 "
-                       + "LEFT JOIN lecturers l ON ul.lid = l.lid "
-                       + "LEFT JOIN users_students us ON us.username = u.username AND us.active = 1 "
-                       + "LEFT JOIN students s ON us.sid = s.sid "
-                       + "WHERE u.username = ? AND u.password = ?";
-            stm = connection.prepareStatement(sql);
+            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, username);
             stm.setString(2, password);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 user = new User();
-                user.setUsername(username);
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
                 user.setDisplayname(rs.getString("displayname"));
 
-                int lid = rs.getInt("lid");
-                if (lid != 0) {
-                    Lecturer lecturer = new Lecturer();
-                    lecturer.setId(lid);
-                    lecturer.setName(rs.getString("lname"));
+                // Kiểm tra xem user có phải là lecturer hay student
+                if (isLecturer(username)) {
+                    Lecturer lecturer = getLecturerByUsername(username);
                     user.setLecturer(lecturer);
-                }
-
-                int sid = rs.getInt("sid");
-                if (sid != 0) {
-                    Student student = new Student();
-                    student.setId(sid);
-                    student.setName(rs.getString("sname"));
+                } else if (isStudent(username)) {
+                    Student student = getStudentByUsername(username);
                     user.setStudent(student);
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (stm != null) stm.close();
-                if (connection != null) connection.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            ex.printStackTrace();
         }
         return user;
     }
-//    public User getUserByUsernamePassword(String username, String password) {
-//        PreparedStatement stm =null;
-//        User user = null;
-//        try {
-//            String sql = "SELECT u.username,u.displayname,l.lid,l.lname\n"
-//                    + "FROM users u LEFT JOIN users_lecturers ul ON ul.username = u.username AND ul.active = 1\n"
-//                    + "						LEFT JOIN lecturers l ON ul.lid = l.lid\n"
-//                    + "						WHERE u.username = ? AND u.[password] = ?";
-//            stm = connection.prepareStatement(sql);
-//            stm.setString(1, username);
-//            stm.setString(2, password);
-//            ResultSet rs = stm.executeQuery();
-//            if(rs.next())
-//            {
-//                user = new User();
-//                user.setDisplayname(rs.getString("displayname"));
-//                user.setUsername(username);
-//                int lid = rs.getInt("lid");
-//                if(lid!=0)
-//                {
-//                   Lecturer lecturer = new Lecturer();
-//                   lecturer.setId(lid);
-//                   lecturer.setName(rs.getString("lname"));
-//                   user.setLecturer(lecturer);
-//                }
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        finally
-//        {
-//            try {
-//                stm.close();
-//                connection.close();
-//            } catch (SQLException ex) {
-//                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//        return user;
-//    }
+
+    private boolean isLecturer(String username) {
+        boolean isLecturer = false;
+        try {
+            String sql = "SELECT * FROM users_lecturers WHERE username = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, username);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                isLecturer = true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return isLecturer;
+    }
+
+    private boolean isStudent(String username) {
+        boolean isStudent = false;
+        try {
+            String sql = "SELECT * FROM user_students WHERE username = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, username);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                isStudent = true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return isStudent;
+    }
+
+    private Lecturer getLecturerByUsername(String username) {
+        Lecturer lecturer = null;
+        try {
+            String sql = "SELECT l.* FROM lecturers l INNER JOIN users_lecturers ul ON l.lid = ul.lid WHERE ul.username = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, username);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                lecturer = new Lecturer();
+                lecturer.setId(rs.getInt("lid"));
+                lecturer.setName(rs.getString("lname"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return lecturer;
+    }
+
+    private Student getStudentByUsername(String username) {
+        Student student = null;
+        try {
+            String sql = "SELECT s.* FROM students s INNER JOIN user_students us ON s.sid = us.sid WHERE us.username = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, username);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                student = new Student();
+                student.setId(rs.getInt("sid"));
+                student.setName(rs.getString("sname"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return student;
+    }
+////    public User getUserByUsernamePassword(String username, String password) {
+////        PreparedStatement stm =null;
+////        User user = null;
+////        try {
+////            String sql = "SELECT u.username, u.displayname, " +
+////                         "l.lid, l.lname, " +
+////                         "s.sid, s.sname " +
+////                         "FROM users u " +
+////                         "LEFT JOIN users_lecturers ul ON ul.username = u.username AND ul.active = 1 " +
+////                         "LEFT JOIN lecturers l ON ul.lid = l.lid " +
+////                         "LEFT JOIN user_students us ON us.username = u.username AND us.active = 1 " +
+////                         "LEFT JOIN students s ON us.sid = s.sid " +
+////                         "WHERE u.username = ? AND u.password = ?";
+////            stm = connection.prepareStatement(sql);
+////            stm.setString(1, username);
+////            stm.setString(2, password);
+////            ResultSet rs = stm.executeQuery();
+////            if(rs.next())
+////            {
+////                user = new User();
+////                user.setDisplayname(rs.getString("displayname"));
+////                user.setUsername(username);
+////                int lid = rs.getInt("lid");
+////                if(lid!=0)
+////                {
+////                   Lecturer lecturer = new Lecturer();
+////                   lecturer.setId(lid);
+////                   lecturer.setName(rs.getString("lname"));
+////                   user.setLecturer(lecturer);
+////                }
+////                int sid = rs.getInt("sid");
+////                if (sid != 0) {
+////                    Student student = new Student();
+////                    student.setId(sid);
+////                    student.setName(rs.getString("sname"));
+////                    user.setStudent(student);
+////                }
+////            
+////            }
+////        } catch (SQLException ex) {
+////            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+////        }
+////        finally
+////        {
+////            try {
+////                stm.close();
+////                connection.close();
+////            } catch (SQLException ex) {
+////                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+////            }
+////        }
+////        return user;
+////}
 //    public User getUserLecturerByUsernamePassword(String username, String password) {
 //        PreparedStatement stm = null;
 //        User user = null;
@@ -147,7 +206,7 @@ public class UserDBContext extends DBContext<User>{
 //        User user = null;
 //        PreparedStatement stm = null;
 //        try {
-//            String sql = "SELECT u.username,u.displayname,l.lid,l.lname\n"
+//            String sql = "SELECT u.username,u.displayname,s.sid,s.sname\n"
 //                    + "FROM users u LEFT JOIN users_students us ON us.username = u.username AND us.active = 1\n"
 //                    + "						LEFT JOIN students  s   ON us.sid = s.lid\n"
 //                    + "						WHERE u.username = ? AND u.[password] = ?";

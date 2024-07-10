@@ -16,7 +16,7 @@ import model.Student;
 import model.Course;
 import model.Exam;
 import model.Lecturer;
-
+                                                                                                                 
 import model.User;
 /**
  *
@@ -33,14 +33,7 @@ public class StudentViewExamController extends BaseRequiredStudentAuthentication
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, Student student)
-    throws ServletException, IOException {
-        CourseDBContext db = new CourseDBContext();
-        int sid = student.getId();
-        ArrayList<Course> courses = db.filterByStudentID(sid);
-        request.setAttribute("courses", courses);
-        request.getRequestDispatcher("../view/exam/student.jsp").forward(request, response);
-    } 
+    
 
     /** 
      * Handles the HTTP <code>POST</code> method.
@@ -49,6 +42,7 @@ public class StudentViewExamController extends BaseRequiredStudentAuthentication
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, User  user, Student student)
     throws ServletException, IOException {
         int cid = Integer.parseInt(request.getParameter("cid"));
@@ -72,13 +66,18 @@ public class StudentViewExamController extends BaseRequiredStudentAuthentication
         return "Short description";
     }// </editor-fold>
 
-    
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, User user, Student student) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+         CourseDBContext db = new CourseDBContext();
+        int sid = student.getId();
+        ArrayList<Course> courses = db.filterByStudentID(sid);
+        request.setAttribute("courses", courses);
+        request.getRequestDispatcher("../view/exam/student.jsp").forward(request, response);
     }
+}
+    
+    
 
     
 
-}
+

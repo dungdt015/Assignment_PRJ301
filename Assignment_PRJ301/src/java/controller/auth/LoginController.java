@@ -20,41 +20,38 @@ import model.User;
  * @author admin
  */
 public class LoginController extends HttpServlet {
- protected void doGet(HttpServletRequest request, HttpServletResponse response)
+ @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getRequestDispatcher("view/auth/login.jsp").forward(request, response);
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String role = request.getParameter("role");
 
         UserDBContext db = new UserDBContext();
         User user = db.getUserByUsernamePassword(username, password);
 
         if (user != null) {
             request.getSession().setAttribute("user", user);
-            if ("student".equalsIgnoreCase(role) && user.getStudent() != null) {
-                request.getSession().setAttribute("role", "student");
-                response.sendRedirect("exam/student");
-            } else if ("lecturer".equalsIgnoreCase(role) && user.getLecturer() != null) {
-                request.getSession().setAttribute("role", "lecturer");
+            if (user.getLecturer() != null) {
                 response.sendRedirect("exam/lecturer");
-            } else {
-                request.getSession().removeAttribute("user");
-                response.getWriter().println("Login failed: invalid username, password, or role!");
             }
-        } else {
-            response.getWriter().println("Login failed: invalid username or password!");
-        }
+            else if(user.getStudent() != null){ 
+              response.sendRedirect("exam/student");
+                
+            }
+            else{
+                response.getWriter().println("login failed! ");
+            }
     }
-    @Override
+    }
+     @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 
-   
-   
 }

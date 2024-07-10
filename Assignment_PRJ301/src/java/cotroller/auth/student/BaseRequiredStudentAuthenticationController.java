@@ -19,7 +19,7 @@ import model.User;
  * @author admin
  */
 public abstract class BaseRequiredStudentAuthenticationController extends HttpServlet {
-  private boolean isAuthenticated(HttpServletRequest request)
+  private boolean isAuthenticatedStudent(HttpServletRequest request)
     {
         User user = (User)request.getSession().getAttribute("user");
         if(user ==null)
@@ -45,7 +45,7 @@ public abstract class BaseRequiredStudentAuthenticationController extends HttpSe
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         User user = (User)request.getSession().getAttribute("user");
-        if(isAuthenticated(request))
+        if(isAuthenticatedStudent(request))
         {
             doGet(request, response, user, user.getStudent());
         }
@@ -72,7 +72,7 @@ public abstract class BaseRequiredStudentAuthenticationController extends HttpSe
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         User user = (User)request.getSession().getAttribute("user");
-        if(isAuthenticated(request))
+        if(isAuthenticatedStudent(request))
         {
             doPost(request, response, user, user.getStudent());
         }
@@ -90,6 +90,8 @@ public abstract class BaseRequiredStudentAuthenticationController extends HttpSe
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    
 
 }
 
