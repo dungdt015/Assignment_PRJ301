@@ -3,16 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.auth;
+package cotroller.auth.student;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Lecturer;
 import model.Student;
 import model.User;
 
@@ -20,17 +18,16 @@ import model.User;
  *
  * @author admin
  */
-public abstract class BaseRequiredLecturerAuthenticationController extends HttpServlet {
-   
-    private boolean isAuthenticated(HttpServletRequest request)
+public abstract class BaseRequiredStudentAuthenticationController extends HttpServlet {
+  private boolean isAuthenticated(HttpServletRequest request)
     {
         User user = (User)request.getSession().getAttribute("user");
         if(user ==null)
             return false;
         else
         {
-            Lecturer lecturer = user.getLecturer();
-            return lecturer != null;
+           Student student = user.getStudent();
+            return student != null;
         }
     }
     
@@ -50,7 +47,7 @@ public abstract class BaseRequiredLecturerAuthenticationController extends HttpS
         User user = (User)request.getSession().getAttribute("user");
         if(isAuthenticated(request))
         {
-            doGet(request, response, user, user.getLecturer());
+            doGet(request, response, user, user.getStudent());
         }
         else
         {
@@ -58,10 +55,10 @@ public abstract class BaseRequiredLecturerAuthenticationController extends HttpS
         }
     } 
     
-    protected abstract void doGet(HttpServletRequest request, HttpServletResponse response,User user, Lecturer lecturer)
+    protected abstract void doGet(HttpServletRequest request, HttpServletResponse response,User user, Student student)
     throws ServletException, IOException;
     
-    protected abstract void doPost(HttpServletRequest request, HttpServletResponse response,User user, Lecturer lecturer)
+    protected abstract void doPost(HttpServletRequest request, HttpServletResponse response,User user, Student student)
     throws ServletException, IOException;
 
     /** 
@@ -77,7 +74,7 @@ public abstract class BaseRequiredLecturerAuthenticationController extends HttpS
         User user = (User)request.getSession().getAttribute("user");
         if(isAuthenticated(request))
         {
-            doPost(request, response, user, user.getLecturer());
+            doPost(request, response, user, user.getStudent());
         }
         else
         {
@@ -95,3 +92,4 @@ public abstract class BaseRequiredLecturerAuthenticationController extends HttpS
     }// </editor-fold>
 
 }
+

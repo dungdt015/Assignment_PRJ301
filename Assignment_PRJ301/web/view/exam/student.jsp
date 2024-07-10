@@ -15,8 +15,8 @@
        <body>
         <c:if test="${requestScope.exams eq null}">
             <c:if test="${requestScope.courses.size() > 0}">
-            <form action="lecturer" method="POST">
-                <input type="hidden" name="lid" value="${param.lid}"/>
+            <form action="student" method="POST">
+                <input type="hidden" name="sid" value="${param.sid}"/>
                 course: <select name="cid">
                     <c:forEach items="${requestScope.courses}" var="c">
                         <option value="${c.id}">
@@ -30,7 +30,7 @@
         </c:if>
         <c:if test="${requestScope.exams ne null}">
             <form action="take" method="GET">
-                <input type="hidden" name="lid" value="${param.lid}"/>
+                <input type="hidden" name="sid" value="${param.sid}"/>
                 <input type="hidden" name="cid" value="${param.cid}"/>
                 <c:forEach items="${requestScope.exams}" var="e">
                     <input type="checkbox" name="eid" value="${e.id}"/> ${e.assessment.name} - ${e.assessment.subject.name} - ${e.date} - ${e.duration} minutes <br/>

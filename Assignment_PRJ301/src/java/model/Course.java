@@ -65,5 +65,9 @@ public class Course {
     public void setStudents(ArrayList<Student> students) {
         this.students = students;
     }
+
+    public void setStudent(Student s) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }
