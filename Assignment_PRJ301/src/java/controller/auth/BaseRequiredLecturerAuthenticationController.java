@@ -8,31 +8,32 @@ package controller.auth;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Lecturer;
-
 import model.User;
 
 /**
  *
  * @author admin
  */
-public class BaseRequiredLecturerAuthenticationController extends HttpServlet {
+public abstract class BaseRequiredLecturerAuthenticationController extends HttpServlet {
+   
+    private boolean isAuthenticated(HttpServletRequest request)
+    {
+        User user = (User)request.getSession().getAttribute("user");
+        if(user ==null)
+            return false;
+        else
+        {
+            Lecturer lecturer = user.getLecturer();
+            return lecturer != null;
+        }
+    }
     
-   private boolean isAuthenticated(HttpServletRequest request) {
-       User user = (User)request.getSession().getAttribute("user");
-       
-       if(user == null) {
-           return false;
-           
-       }
-       else{
-           Lecturer lecturer = user.getLecturer();
-           return lecturer !=null;
-       }
-   }
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -45,15 +46,22 @@ public class BaseRequiredLecturerAuthenticationController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       User user =(User) request.getSession().getAttribute("user");
-       
-       if(isAuthenticated(request)) {
-           doGet(request, response, user, user.getLecturer());
-       }else{
-           response.getWriter().println("access denied");
-       }
-      
+        User user = (User)request.getSession().getAttribute("user");
+        if(isAuthenticated(request))
+        {
+            doGet(request, response, user, user.getLecturer());
+        }
+        else
+        {
+            response.getWriter().println("access denied!");
+        }
     } 
+    
+    protected abstract void doGet(HttpServletRequest request, HttpServletResponse response,User user, Lecturer lecturer)
+    throws ServletException, IOException;
+    
+    protected abstract void doPost(HttpServletRequest request, HttpServletResponse response,User user, Lecturer lecturer)
+    throws ServletException, IOException;
 
     /** 
      * Handles the HTTP <code>POST</code> method.
@@ -65,12 +73,15 @@ public class BaseRequiredLecturerAuthenticationController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-         User user =(User) request.getSession().getAttribute("user");
-         if(isAuthenticated(request)) {
-             doPost(request, response, user, user.getLecturer());
-         } else {
-             response.getWriter().println("access denied");
-         }
+        User user = (User)request.getSession().getAttribute("user");
+        if(isAuthenticated(request))
+        {
+            doPost(request, response, user, user.getLecturer());
+        }
+        else
+        {
+            response.getWriter().println("access denied!");
+        }
     }
 
     /** 
@@ -81,13 +92,5 @@ public class BaseRequiredLecturerAuthenticationController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, User user, Lecturer lecturer) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, User user, Lecturer lecturer) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
 }

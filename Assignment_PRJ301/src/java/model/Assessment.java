@@ -12,33 +12,41 @@ import java.util.Date;
  * @author admin
  */
 public class Assessment {
-     private int id;
+    private int id;
     private String name;
     private float weight;
     private Subject subject;
-        public int getId() {
-            return id;
-        }
 
-        public void setId(int id) {
-            this.id = id;
-        }
+    public int getId() {
+        return id;
+    }
 
-        public String getName() {
-            return name;
-        }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-        public void setName(String name) {
-            this.name = name;
-        }
+    public String getName() {
+        return name;
+    }
 
-        public float getWeight() {
-            return weight;
-        }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        public void setWeight(float weight) {
-            this.weight = weight;
-        }
+    public float getWeight() {
+        return weight;
+    }
 
-       
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+    
 }

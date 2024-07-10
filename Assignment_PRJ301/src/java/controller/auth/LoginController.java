@@ -34,20 +34,20 @@ public class LoginController extends HttpServlet {
         User user = null;
 
         if ("student".equalsIgnoreCase(role)) {
-            user = db.getUserStudentByUsernamePassword(username, password);
+            user = db.getUserByUsernamePassword(username, password);
             if (user != null) {
                 request.getSession().setAttribute("user", user);
                 request.getSession().setAttribute("role", "student");
-                response.sendRedirect("../exam/student");
+                response.sendRedirect("exam/student");
             } else {
                 response.getWriter().println("Login failed: invalid username or password for student!");
             }
         } else if ("lecturer".equalsIgnoreCase(role)) {
-            user = db.getUserLecturerByUsernamePassword(username, password);
+            user = db.getUserByUsernamePassword(username, password);
             if (user != null) {
                 request.getSession().setAttribute("user", user);
                 request.getSession().setAttribute("role", "lecturer");
-                response.sendRedirect("exam/lecturer?lid=1");
+                response.sendRedirect("exam/lecturer");
             } else {
                 response.getWriter().println("Login failed: invalid username or password for lecturer!");
             }

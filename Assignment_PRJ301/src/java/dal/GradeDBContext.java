@@ -19,38 +19,39 @@ import model.Student;
  *
  * @author admin
  */
-public class GradeDBContext extends DBContext<Grade>{
 
-    public ArrayList<Grade> getGradesByEids(int[] eids) {
+    public class GradeDBContext extends DBContext<Grade> {
+public ArrayList<Grade> getGradesFromExamIds(ArrayList<Integer> eids) {
         ArrayList<Grade> grades = new ArrayList<>();
-        String sql = """
-                     SELECT eid,sid,score FROM grades WHERE (1 > 2)
-                     """;
-        for (int eid : eids) {
-            sql += " OR eid = ? ";
-        }
         PreparedStatement stm = null;
         try {
+            String sql = "SELECT eid,sid,score FROM grades WHERE (1>2)";
+            for (Integer eid : eids) {
+                sql += " OR eid = ?";
+            }
+
             stm = connection.prepareStatement(sql);
-            for (int i = 0; i < eids.length; i++) {
-                stm.setInt((i + 1), eids[i]);
+
+            for (int i = 0; i < eids.size(); i++) {
+                stm.setInt((i + 1), eids.get(i));
             }
 
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-                Exam exam = new Exam();
-                exam.setId(rs.getInt("eid"));
+                Grade g = new Grade();
+                g.setScore(rs.getFloat("score"));
 
                 Student s = new Student();
                 s.setId(rs.getInt("sid"));
-
-                Grade g = new Grade();
-                g.setExam(exam);
                 g.setStudent(s);
-                g.setScore(rs.getFloat("score"));
+
+                Exam e = new Exam();
+                e.setId(rs.getInt("eid"));
+                g.setExam(e);
 
                 grades.add(g);
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(GradeDBContext.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -64,35 +65,34 @@ public class GradeDBContext extends DBContext<Grade>{
         return grades;
     }
 
-    public void saveGradesByCourse(int cid, ArrayList<Grade> grades) {
-        PreparedStatement stm_delete = null;
-        ArrayList<PreparedStatement> stm_insests = new ArrayList<>();
+    public void insertGradesForCourse(int cid, ArrayList<Grade> grades) {
+        String sql_remove = "DELETE grades WHERE sid IN (SELECT sid FROM students_courses WHERE cid = ?)";
+        String sql_insert = "INSERT INTO [grades]\n"
+                + "           ([eid]\n"
+                + "           ,[sid]\n"
+                + "           ,[score])\n"
+                + "     VALUES\n"
+                + "           (?\n"
+                + "           ,?\n"
+                + "           ,?)";
+        
+        PreparedStatement stm_remove =null;
+        ArrayList<PreparedStatement> stm_inserts = new ArrayList<>();
+        
         try {
             connection.setAutoCommit(false);
-            
-            String sql_remove_records = "DELETE FROM grades WHERE [sid] IN (SELECT [sid] FROM students_courses WHERE cid=?)";
-            String sql_insert_grades = "INSERT INTO [grades]\n"
-                    + "           ([eid]\n"
-                    + "           ,[sid]\n"
-                    + "           ,[score])\n"
-                    + "     VALUES\n"
-                    + "           (?\n"
-                    + "           ,?\n"
-                    + "           ,?)";
-            
-            stm_delete = connection.prepareStatement(sql_remove_records);
-            stm_delete.setInt(1, cid);
-            stm_delete.executeUpdate();
+            stm_remove = connection.prepareStatement(sql_remove);
+            stm_remove.setInt(1, cid);
+            stm_remove.executeUpdate();
             
             for (Grade grade : grades) {
-                PreparedStatement stm_insert = connection.prepareStatement(sql_insert_grades);
+                PreparedStatement stm_insert = connection.prepareStatement(sql_insert);
                 stm_insert.setInt(1, grade.getExam().getId());
-                stm_insert.setInt(2, grade.getStudent().getId());
+                stm_insert.setInt(2,grade.getStudent().getId());
                 stm_insert.setFloat(3, grade.getScore());
                 stm_insert.executeUpdate();
-                stm_insests.add(stm_insert);
+                stm_inserts.add(stm_insert);
             }
-            
             connection.commit();
         } catch (SQLException ex) {
             Logger.getLogger(GradeDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,16 +106,16 @@ public class GradeDBContext extends DBContext<Grade>{
         {
             try {
                 connection.setAutoCommit(true);
-                stm_delete.close();
-                for (PreparedStatement stm_insest : stm_insests) {
-                    stm_insest.close();
+                stm_remove.close();
+                for (PreparedStatement stm_insert : stm_inserts) {
+                    stm_insert.close();
                 }
                 connection.close();
             } catch (SQLException ex) {
                 Logger.getLogger(GradeDBContext.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
     }
     @Override
     public ArrayList<Grade> all() {
@@ -142,4 +142,102 @@ public class GradeDBContext extends DBContext<Grade>{
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
         
-}
+//    public ArrayList<Grade> getGradesFromExamIds(ArrayList<Integer> eids) {
+//        ArrayList<Grade> grades = new ArrayList<>();
+//        PreparedStatement stm = null;
+//        try {
+//            String sql = "SELECT eid,sid,score FROM grades WHERE (1>2)";
+//            for (Integer eid : eids) {
+//                sql += " OR eid = ?";
+//            }
+//
+//            stm = connection.prepareStatement(sql);
+//
+//            for (int i = 0; i < eids.size(); i++) {
+//                stm.setInt((i + 1), eids.get(i));
+//            }
+//
+//            ResultSet rs = stm.executeQuery();
+//            while (rs.next()) {
+//                Grade g = new Grade();
+//                g.setScore(rs.getFloat("score"));
+//
+//                Student s = new Student();
+//                s.setId(rs.getInt("sid"));
+//                g.setStudent(s);
+//
+//                Exam e = new Exam();
+//                e.setId(rs.getInt("eid"));
+//                g.setExam(e);
+//
+//                grades.add(g);
+//            }
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(GradeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            try {
+//                stm.close();
+//                connection.close();
+//            } catch (SQLException ex) {
+//                Logger.getLogger(GradeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//        return grades;
+//    }
+//
+//   public void insertGradesForCourse(int cid, ArrayList<Grade> grades) {
+//        String sql_remove = "DELETE grades WHERE sid IN (SELECT sid FROM students_courses WHERE cid = ?)";
+//        String sql_insert = "INSERT INTO [grades]\n"
+//                + "           ([eid]\n"
+//                + "           ,[sid]\n"
+//                + "           ,[score])\n"
+//                + "     VALUES\n"
+//                + "           (?\n"
+//                + "           ,?\n"
+//                + "           ,?)";
+//        
+//        PreparedStatement stm_remove =null;
+//        ArrayList<PreparedStatement> stm_inserts = new ArrayList<>();
+//        
+//        try {
+//            connection.setAutoCommit(false);
+//            stm_remove = connection.prepareStatement(sql_remove);
+//            stm_remove.setInt(1, cid);
+//            stm_remove.executeUpdate();
+//            
+//            for (Grade grade : grades) {
+//                PreparedStatement stm_insert = connection.prepareStatement(sql_insert);
+//                stm_insert.setInt(1, grade.getExam().getId());
+//                stm_insert.setInt(2,grade.getStudent().getId());
+//                stm_insert.setFloat(3, grade.getScore());
+//                stm_insert.executeUpdate();
+//                stm_inserts.add(stm_insert);
+//            }
+//            connection.commit();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(GradeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+//            try {
+//                connection.rollback();
+//            } catch (SQLException ex1) {
+//                Logger.getLogger(GradeDBContext.class.getName()).log(Level.SEVERE, null, ex1);
+//            }
+//        }
+//        finally
+//        {
+//            try {
+//                connection.setAutoCommit(true);
+//                stm_remove.close();
+//                for (PreparedStatement stm_insert : stm_inserts) {
+//                    stm_insert.close();
+//                }
+//                connection.close();
+//            } catch (SQLException ex) {
+//                Logger.getLogger(GradeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+      
+    
+
+    }
+    

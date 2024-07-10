@@ -11,20 +11,11 @@ import java.util.ArrayList;
  * @author admin
  */
 public class Course {
-      private int id;
-    private Lecturer lecturer;
-    private Student student;
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
+    private int id;
     private String name;
-    private Semester semester;
+    private Lecturer lecturer;
     private Subject subject;
+    private Semester semester;
     private ArrayList<Student> students = new ArrayList<>();
 
     public int getId() {
@@ -35,14 +26,6 @@ public class Course {
         this.id = id;
     }
 
-    public Lecturer getLecturer() {
-        return lecturer;
-    }
-
-    public void setLecturer(Lecturer lecturer) {
-        this.lecturer = lecturer;
-    }
-
     public String getName() {
         return name;
     }
@@ -51,12 +34,12 @@ public class Course {
         this.name = name;
     }
 
-    public Semester getSemester() {
-        return semester;
+    public Lecturer getLecturer() {
+        return lecturer;
     }
 
-    public void setSemester(Semester semester) {
-        this.semester = semester;
+    public void setLecturer(Lecturer lecturer) {
+        this.lecturer = lecturer;
     }
 
     public Subject getSubject() {
@@ -65,6 +48,14 @@ public class Course {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
     }
 
     public ArrayList<Student> getStudents() {
