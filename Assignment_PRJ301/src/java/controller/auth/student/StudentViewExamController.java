@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-import cotroller.auth.student.BaseRequiredStudentAuthenticationController;
+import controller.auth.student.BaseRequiredStudentAuthenticationController;
 import dal.CourseDBContext;
 import dal.ExamDBContext;
 import java.io.IOException;
@@ -23,25 +23,7 @@ import model.User;
  * @author admin
  */
 public class StudentViewExamController extends BaseRequiredStudentAuthenticationController {
-      
-    
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
-     * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    
 
-    /** 
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, User  user, Student student)
     throws ServletException, IOException {
@@ -68,13 +50,14 @@ public class StudentViewExamController extends BaseRequiredStudentAuthentication
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, User user, Student student) throws ServletException, IOException {
-         CourseDBContext db = new CourseDBContext();
+        CourseDBContext db = new CourseDBContext();
         int sid = student.getId();
         ArrayList<Course> courses = db.filterByStudentID(sid);
         request.setAttribute("courses", courses);
         request.getRequestDispatcher("../view/exam/student.jsp").forward(request, response);
     }
 }
+    
     
     
 

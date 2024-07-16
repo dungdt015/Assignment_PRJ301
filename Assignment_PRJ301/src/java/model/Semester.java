@@ -9,14 +9,34 @@ package model;
  * @author admin
  */
 public class Semester {
-     private int id;
+    private int semid;
+    private int year;
+     private String season;
 
-    public int getId() {
-        return id;
+    public int getSemId() {
+        return semid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setSemId(int semid) {
+        this.semid = semid;
     }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public void setSeason(String season) {
+        this.season = season;
+    }
+
+   
     
 }

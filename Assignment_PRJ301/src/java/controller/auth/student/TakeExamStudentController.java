@@ -2,11 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package cotroller.auth.student;
+package controller.auth.student;
 
 import dal.ExamDBContext;
 import dal.GradeDBContext;
-import dal.StudentDBContext;
+import dal.StudentDBContext; 
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

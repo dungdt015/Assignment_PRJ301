@@ -56,6 +56,41 @@ public class CourseDBContext extends DBContext<Course>{
         
         
     }
+     public ArrayList<Course> getCoursesByStudent(int sid) {
+        ArrayList<Course> courses = new ArrayList<>();
+        PreparedStatement stm = null;
+        try {
+            String sql = "SELECT c.cid,c.cname FROM courses c INNER JOIN students s ON s.sid = c.sid\n"
+                    + "				INNER JOIN semester sem ON sem.semid = c.semid\n"
+                    + "				WHERE l.lid = ? AND sem.active = 1";
+            
+            
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, sid);
+            ResultSet rs = stm.executeQuery();
+            while(rs.next())
+            {
+                Course c = new Course();
+                c.setId(rs.getInt("cid"));
+                c.setName(rs.getString("cname"));
+                courses.add(c);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally
+        {
+            try {
+                stm.close();
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(CourseDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return courses; 
+        
+        
+    }
     public ArrayList<Course> filterByLecturerID(int lid) {
         ArrayList<Course> courses = new ArrayList<>();
         PreparedStatement stm = null;
@@ -83,7 +118,7 @@ public class CourseDBContext extends DBContext<Course>{
                 c.setSubject(sub);
                 
                 Semester sem = new Semester();
-                sem.setId(rs.getInt("semid"));
+                sem.setSemId(rs.getInt("semid"));
                 c.setSemester(sem);
 
                 courses.add(c);
@@ -107,10 +142,10 @@ public class CourseDBContext extends DBContext<Course>{
         ArrayList<Course> courses = new ArrayList<>();
         PreparedStatement stm = null;
         try {
-            String sql = "SELECT c.cid,c.cname,c.subid,sub.subname,c.lid,s.semid,s.season,s.active,s.year FROM \n"
+            String sql = "SELECT c.cid,c.cname,c.subid,sub.subname,c.sid,s.semid,s.season,s.active,s.year FROM \n"
                     + "courses c INNER JOIN semester s ON s.semid = c.semid\n"
                     + "INNER JOIN subjects sub ON sub.subid = c.subid\n"
-                    + "WHERE s.active = 1 AND c.lid = ?";
+                    + "WHERE s.active = 1 AND c.sid = ?";
 
             stm = connection.prepareStatement(sql);
             stm.setInt(1, sid);
@@ -119,10 +154,6 @@ public class CourseDBContext extends DBContext<Course>{
                 Course c = new Course();
                 c.setId(rs.getInt("cid"));
                 c.setName(rs.getString("cname"));
-
-//                Lecturer l = new Lecturer();
-//                l.setId(rs.getInt("id"));
-//                c.setLecturer(l);
                 
                 Student s = new Student();
                 s.setId(rs.getInt("sid"));
@@ -134,7 +165,7 @@ public class CourseDBContext extends DBContext<Course>{
                 c.setSubject(sub);
                 
                 Semester sem = new Semester();
-                sem.setId(rs.getInt("semid"));
+                sem.setSemId(rs.getInt("semid"));
                 c.setSemester(sem);
 
                 courses.add(c);

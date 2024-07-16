@@ -14,6 +14,15 @@ public class Course {
     private int id;
     private String name;
     private Lecturer lecturer;
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+    private Student student;
     private Subject subject;
     private Semester semester;
     private ArrayList<Student> students = new ArrayList<>();
@@ -66,8 +75,5 @@ public class Course {
         this.students = students;
     }
 
-    public void setStudent(Student s) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
+   
 }
