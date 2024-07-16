@@ -23,7 +23,7 @@
             .table-container {
                 background-color: #f8f9fa;
                 padding: 20px;
-                padding-bottom: 60px; /* Add padding to bottom */
+                padding-bottom: 80px; /* Add padding to bottom */
                 border-radius: 5px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 width: 100%;
@@ -52,12 +52,48 @@
                 right: 20px;
                 bottom: 20px;
             }
+            h2 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
         </style>
+        <script>
+            function calculateScores() {
+                const weightMap = {
+                    'WS1': 0.05,
+                    'WS2': 0.05,
+                    'PT1': 0.05,
+                    'PT2': 0.05,
+                    'Assignment': 0.4,
+                    'Final Exam': 0.2,
+                    'Practical Exam': 0.2
+                };
+                const rows = document.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const inputs = row.querySelectorAll('input[type="text"]');
+                    let total = 0;
+                    inputs.forEach(input => {
+                        const examName = input.name.match(/score\d+_(.+)/)[1]; // Extract the exam name
+                        const weight = weightMap[examName] || 0;
+                        total += (parseFloat(input.value) || 0) * weight;
+                    });
+                    row.querySelector('.total-score').innerText = total.toFixed(2);
+                    row.querySelector('.status').innerText = total >= 5 ? 'PASS' : 'NOT PASS';
+                });
+            }
+            document.addEventListener('DOMContentLoaded', () => {
+                const inputs = document.querySelectorAll('input[type="text"]');
+                inputs.forEach(input => {
+                    input.addEventListener('input', calculateScores);
+                });
+                calculateScores(); // Initial calculation on page load
+            });
+        </script>
     </head>
     <body>
         <div class="container center-table">
             <div class="table-container">
-                <h2 class="text-center">Exams</h2>
+                <h2>Exams</h2>
                 <form action="take" method="POST">
                     <table class="table table-bordered">
                         <thead>
@@ -69,6 +105,8 @@
                                         ${e.from}
                                     </th>
                                 </c:forEach>
+                                <th>Total Score</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -77,7 +115,7 @@
                                     <td>${s.name}</td>
                                     <c:forEach items="${requestScope.exams}" var="e">
                                         <td>
-                                            <input type="text" class="form-control" name="score${s.id}_${e.id}"
+                                            <input type="text" class="form-control" name="score${s.id}_${e.assessment.name}"
                                                 <c:forEach items="${requestScope.grades}" var="g">
                                                     <c:if test="${e.id eq g.exam.id and s.id eq g.student.id}">
                                                         value="${g.score}"
@@ -87,6 +125,8 @@
                                             <input type="hidden" name="gradeid" value="${s.id}_${e.id}"/>
                                         </td>
                                     </c:forEach>
+                                    <td class="total-score">0.00</td>
+                                    <td class="status">NOT PASS</td>
                                 </tr>
                             </c:forEach>    
                         </tbody>

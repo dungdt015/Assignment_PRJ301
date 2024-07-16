@@ -36,6 +36,10 @@
         <servlet-name>ViewClassGradesController</servlet-name>
         <servlet-class>controller.exam.ViewClassGradesController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewSemesterByStudentController</servlet-name>
+        <servlet-class>controller.auth.student.ViewSemesterByStudentController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LecturerViewExamController</servlet-name>
         <url-pattern>/exam/lecturer</url-pattern>
@@ -71,5 +75,9 @@
     <servlet-mapping>
         <servlet-name>ViewClassGradesController</servlet-name>
         <url-pattern>/lecturer/grade</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewSemesterByStudentController</servlet-name>
+        <url-pattern>/student/semester</url-pattern>
     </servlet-mapping>
 </web-app>
