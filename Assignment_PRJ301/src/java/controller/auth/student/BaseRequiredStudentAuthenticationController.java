@@ -75,6 +75,7 @@ public abstract class BaseRequiredStudentAuthenticationController extends HttpSe
         if(isAuthenticatedStudent(request))
         {
             doPost(request, response, user, user.getStudent());
+            
         }
         else
         {
