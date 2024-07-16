@@ -11,8 +11,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Exams</title>
-
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <style>
             .center-form {
                 display: flex;
@@ -36,15 +36,15 @@
                 font-size: 1.5rem; /* Increased font size by 2px */
             }
             .btn-success {
-                background-color: #007bff;
+background-color: #007bff;
                 color: white;
-                width: 150px; /* Increased button width */
+ width: 150px; /* Increased button width */
                 margin-top: 20px; /* Added margin to move it down */
             }
         </style>
     </head>
     <body>
-
+        
         <div class="container center-form">
             <div class="form-container">
                 <c:if test="${requestScope.exams eq null}">

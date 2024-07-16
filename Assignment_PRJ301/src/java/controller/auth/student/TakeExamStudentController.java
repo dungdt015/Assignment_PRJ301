@@ -39,7 +39,7 @@ public class TakeExamStudentController extends BaseRequiredStudentAuthentication
 
         request.setAttribute("grades", grades);
         request.setAttribute("exams", exams);
-        request.getRequestDispatcher("..view/student/grade.jsp").forward(request, response);
+        request.getRequestDispatcher("..view/student/take.jsp").forward(request, response);
     }
 
     @Override
